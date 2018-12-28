@@ -1,58 +1,62 @@
+//Arduino code for 2D PID ball balancer 
+//Author: Barry Li
+
 #include <Servo.h>
 
-// defines pins numbers
-const int trigPin = 9; //Ultrasonic Sensor Trig Pin
-const int echoPin = 10; //Ultrasonic Sensor Echo Pin
-const int servoPin = 13; //Servo Pin
+//Pins numbers
+const int trigPin = 9; 			//Ultrasonic Sensor Trig Pin
+const int echoPin = 10; 		//Ultrasonic Sensor Echo Pin
+const int servoPin = 13; 		//Servo Pin
 
-// defines variables
-long duration; //Time it Took for Sound to Comeback
-int distance; //Location of Ball from Sensor
-int pos = 0; //Servo Position
-double StartAngle = 102; //Angle of servo when beam is parallel to the ground
-double pError,iError,dError; //Error values associated with PID
-double Output; //Sum of error values multiplied by their corresponding gains
-double prevError; //Error from previous iteration
-unsigned long prevTime,now; //Previous time and current time
-double dt; // Change in time
+//Variables
+long duration; 					//Time it Took for Sound to Comeback
+int distance; 					//Location of Ball from Sensor
+int pos = 0; 					//Servo Position
+double StartAngle = 102; 		//Angle of servo when beam is parallel to the ground
+double pError,iError,dError; 	//Error values associated with PID
+double Output; 					//Sum of error values multiplied by their corresponding gains
+double prevError; 				//Error from previous iteration
+unsigned long prevTime,now; 	//Previous time and current time
+double dt; 						//Change in time
 
-int Setpoint = 0;  //Desired point on the beam
+int Setpoint = 0;  				//Desired point on the beam
 
 //Gains
-float Kp = 0.16; //0.17
-float Ki = 0.00005; // 0.0001
-float Kd = 7; // 1.8
+float Kp = 0.16; 				//Proportional constant
+float Ki = 0.00005; 			//Integration constant
+float Kd = 7; 					//Derivation constant
 
-Servo servo;  // create servo object to control the servo
+Servo servo;  					//Create servo object to control the servo
 
+//Initial setup
 void setup() {
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  pinMode(trigPin, OUTPUT); 	//Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); 		//Sets the echoPin as an Input
 
-  servo.attach(servoPin);  // attaches the servo on pin 13 to the servo object
-  servo.write(StartAngle); //Initiate the motor to the horizonal angle
-  Serial.begin(9600); //Starts the serial communication
+  servo.attach(servoPin);  		//Attaches the servo on pin 13 to the servo object
+  servo.write(StartAngle); 		//Initiate the motor to the horizonal angle
+  Serial.begin(9600); 			//Starts the serial communication
 }
 void loop() {
-  // Clears the trigPin
+  //Clears the trigPin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   
-  // Sets the trigPin on HIGH state for 10 micro seconds
+  //Sets the trigPin on HIGH state for 10 micro seconds
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   
-  // Reads the echoPin, returns the sound wave travel time in microseconds
+  //Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
+  //Calculating the distance
   distance= duration*0.034/2 - 15;
-  // Prints the distance on the Serial Monitor
+  //Prints the distance on the Serial Monitor
   if (distance > 30 or distance < -30) {
-    distance = -12; // Anything above or below this value is just disturbances
+    distance = -12; 			// Anything above or below this value is just disturbances
   }
   if (distance == 0 or distance == 0) {
-    distance = 0; // Adjust for sensor noise
+    distance = 0; 				//Adjust for sensor noise
   }
 
 
@@ -63,7 +67,7 @@ void loop() {
   dError = (pError - prevError) / dt;
   iError = iError + (pError * dt);
   if (iError > 10) {
-    iError = 10;
+    iError = 10;				//Error greater than 10 are ignored; noise
   }
 
   Output = Kp * pError + Ki * iError + Kd * dError;
@@ -78,8 +82,11 @@ void loop() {
 
   servo.write(StartAngle + Output);
 
+  //Serial output
   Serial.print("PID: ");
   Serial.println(Output);
+  
+  //Set previous error and time
   prevError = pError;
   prevTime = now;
 
