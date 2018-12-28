@@ -18,11 +18,16 @@ The constants can also be determined by manually tuning the system.
   * Balsa Wood Frame
 
 ### Arduino Connections
-![alt text](https://raw.githubusercontent.com/JFBarryLi/PID_BallBalancer/master/img/ArduinoDiagram.png "Arduino Connections")
-
+<p align="center">
+	<img src="https://raw.githubusercontent.com/JFBarryLi/PID_BallBalancer/master/img/ArduinoDiagram.png" alt="Arduino Connections Image"/>
+</p>
 
 ### Dimensions [in]
-![alt text](https://raw.githubusercontent.com/JFBarryLi/PID_BallBalancer/master/img/dimensions.png "Arduino Connections")
+<p align="center">
+	<img src="https://raw.githubusercontent.com/JFBarryLi/PID_BallBalancer/master/img/dimensions.png" alt="Dimensons Image"/>
+</p>
 
 ### SolidWorks Rendering
-![alt text](https://raw.githubusercontent.com/JFBarryLi/PID_BallBalancer/master/img/SolidWorksRendering.JPG "Arduino Connections")
+<p align="center">
+	<img src="https://raw.githubusercontent.com/JFBarryLi/PID_BallBalancer/master/img/SolidWorksRendering.JPG" alt="SolidWorks Rendering Image"/>
+</p>
